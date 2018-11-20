@@ -1,0 +1,9 @@
+
+<block wx:for="{{list}}" wx:key="index">
+  <view class='list' data-index="{{index}}" bindtap='chooseChild' style="background-color: {{nowChildKlass == item.student.klass.id? '#ffffff' : '#f2f2f2'}}">
+    <view class='name'>
+      <view class='text'>{{item.student.name}}</view>
+    </view>
+    <view class='time'>{{item.student.joinedAt}}</view>
+  </view>
+</block>

@@ -1,0 +1,17 @@
+<view class='title'>
+  <view>姓名</view>
+  <view>日期</view>
+  <view>详情</view>
+</view>
+<view class='box'>
+  <block wx:for="{{childList}}">
+    <view class='row'>
+      <view class='childImg'>
+        <view class='Img' style="background-image: url(https://{{item.url == ''? noImg : item.url}})"></view>
+        <view class='name'>{{item.name}}</view>
+      </view>
+      <view class='date'>2018-01-20</view>
+      <view class='detail' bindtap='goDetail'>查看</view>
+    </view>
+  </block>
+</view>

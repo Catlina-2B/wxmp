@@ -1,0 +1,34 @@
+<view class='box'>
+  <view class='lrBox bigBox'>
+    <view class='lrBox'>
+      <view>姓名：</view>
+      <view>{{childName}}</view>
+    </view>
+    <view class='lrBox'>
+      <view>执行时间：</view>
+      <view>2018-04-20</view>
+    </view>
+  </view>
+  <view>
+    <view class='lrBox centerTit'>
+      <view>药品：</view>
+      <view class='right'>小儿氨酚什么的</view>
+    </view>
+  </view>
+  <block wx:for="{{medicineTime}}" wx:key="index">
+    <view class='lrBox'>
+      <view>服药时间：{{index + 1}}、</view>
+      <view>早饭后</view>
+    </view>
+  </block>
+  <view>
+    <view class='lrBox'>
+      <view>每次剂量：</view>
+      <view class='right'>20ml</view>
+    </view>
+  </view>
+  <view>
+    <view class='lrBox'>备注：</view>
+    <text class='other'>{{other}}</text>
+  </view>
+</view>

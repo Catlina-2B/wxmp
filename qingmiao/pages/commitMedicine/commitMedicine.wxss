@@ -1,0 +1,73 @@
+page {
+  padding: 40rpx;
+  box-sizing: border-box;
+  font-size: 36rpx;
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
+  color: #2f138d;
+}
+
+.box>view {
+  margin-bottom: 40rpx;
+}
+
+.bigBox{
+  width: 100%;
+  justify-content: space-between;
+}
+
+.right{
+  flex: 1;
+}
+
+.lrBox {
+  display: flex;
+  flex-direction: row;
+  justify-content: between;
+  align-items: center;
+  color: #2f138d;
+}
+
+.InputBorder {
+  width: 100%;
+  height: 66rpx;
+  border: 1px solid #b0b5b9;
+  border-radius: 10rpx;
+  font-size: 32rpx;
+  padding: 10rpx;
+  box-sizing: border-box;
+}
+
+.textCenter {
+  text-align: center;
+}
+
+textarea{
+  width: 100%;
+  border: 1px solid #b0b5b9;
+  border-radius: 10rpx;
+  font-size: 32rpx;
+  padding: 20rpx;
+  box-sizing: border-box;
+}
+
+.submit{
+  color: #ffffff;
+  background-color: #2aa2ff;
+  width: 330rpx;
+  height: 76rpx;
+  text-align: center;
+  line-height: 76rpx;
+}
+
+.add{
+  margin: auto;
+}
+
+.add image{
+  width: 46rpx;
+  height: 38rpx;
+}

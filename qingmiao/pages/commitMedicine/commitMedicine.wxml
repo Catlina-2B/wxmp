@@ -1,0 +1,52 @@
+<form report-submit='true' bindsubmit='submit'>
+  <view class='box'>
+    <view class='lrBox bigBox'>
+      <view class='lrBox'>
+        <view>姓名：</view>
+        <view>{{childName}}</view>
+      </view>
+      <view class='lrBox'>
+        <view>执行时间：</view>
+        <picker mode="date" value="{{date}}" start="2015-09-01" end="2017-09-01" bindchange="bindDateChange">
+          <view class="picker InputBorder right">
+            {{date}}
+          </view>
+        </picker>
+      </view>
+    </view>
+    <view>
+      <view class='lrBox bigBox'>
+        <view>药品：</view>
+        <view class='right'>
+          <input class='InputBorder' type='text'></input>
+        </view>
+      </view>
+    </view>
+    <block wx:for="{{medicineTime}}" wx:key="index">
+      <view class='lrBox bigBox'>
+        <view>服药时间：{{index + 1}}、</view>
+        <view class='right'>
+          <picker mode="time" value="{{item.time}}" start="09:01" end="21:01" data-index="{{index}}" bindchange="bindTimeChange">
+            <view class="picker InputBorder textCenter">
+              {{item.time}}
+            </view>
+          </picker>
+        </view>
+      </view>
+    </block>
+    <view class='add' bindtap='add'><image src='{{add}}'></image></view>
+    <view>
+      <view class='lrBox bigBox'>
+        <view>每次剂量：</view>
+        <view class='right'>
+          <input class='InputBorder' type='text' bindinput='timece'></input>
+        </view>
+      </view>
+    </view>
+    <view>
+      <view class='lrBox'>备注：</view>
+      <textarea placeholder='请输入备注，例如：孩子有点上火,希望给多喝水，谢谢老师...'></textarea>
+    </view>
+  </view>
+  <button class='submit' form-type='submit'>确认提交</button>
+</form>

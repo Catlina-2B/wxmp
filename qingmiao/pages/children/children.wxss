@@ -1,0 +1,39 @@
+
+.list {
+  display: flex;
+  flex-direction: row;
+  height: 120rpx;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10rpx;
+  border-bottom: 1px solid #ccc;
+  padding-left: 20rpx;
+  padding-right: 20rpx;
+}
+
+.left {
+  width: 160rpx;
+}
+
+.name{
+  /* width: 300rpx; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.name image{
+  width: 100rpx;
+  height: 100rpx;
+}
+
+.name .text{
+  font-size: 36rpx;
+  word-break: normal;
+}
+
+.time {
+  font-size: 32rpx;
+  color: #ccc;
+}
