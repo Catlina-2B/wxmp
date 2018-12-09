@@ -2,7 +2,6 @@
    * 整理数据
    */
 const confirmData = function (arr1, arr2) {
-  // console.log('aaa')
   let newArr = arr1
   if(arr2.length != 0){
     for (var i = 0; i < arr2.length - 1; i++) {

@@ -9,12 +9,17 @@ App({
     // debugger
     const app = this
 
+    wx.login({
+      success: function(res){
+        console.log(res.code)
+      }
+    })
+
     //版本更新提示
     const updateManager = wx.getUpdateManager()
 
     updateManager.onCheckForUpdate(function (res) {
       // 请求完新版本信息的回调
-      console.log(res.hasUpdate)
     })
 
     updateManager.onUpdateReady(function () {
@@ -82,13 +87,18 @@ App({
             },
             success: function (res) {
               // console.log(res)
-              wx.setStorageSync('resData', res.data)
               // res.statusCode = 500
               wx.showToast({
                 title: '登录中',
                 icon: 'loading'
               })
+              // wx.navigateTo({
+              //   url: '../teachInformation/teachInformation',
+              // })
+              // return
               if (res.statusCode != 500) {
+                wx.setStorageSync('resData', res.data)
+                
                 const loginTime = new Date().getTime()
                 wx.setStorageSync('loginTime', loginTime)
                 app.globalData.schoolId = res.data.schools[0].id
@@ -100,13 +110,16 @@ App({
                   },
                   method: 'post',
                   success: function (res) {
+                    // console.log(res)
                     if (res.data.patriarch != null) {
                       if (res.data.patriarch.guardians.length != 0) {
                         wx.setStorageSync('klassId', res.data.patriarch.guardians[0].klass.id)
                       }
                       wx.setStorageSync('userToken', res.data.token)
+                      wx.setStorageSync('actorId', res.data.patriarch.actor.id)
+                      wx.setStorageSync('studentId', res.data.patriarch.guardians[0].student.id)
+                      wx.setStorageSync('studentName', res.data.patriarch.guardians[0].student.name)
                       app.globalData.userToken = res.data.token
-                      // console.log('token已设置好')
                       countActive(ActiveType, res.data.token)
                       wx.hideToast()
                       wx.switchTab({
@@ -146,6 +159,7 @@ App({
                   }
                 })
               } else {
+                console.log(res)
                 wx.hideToast()
                 wx.showModal({
                   title: '提示',
@@ -181,7 +195,6 @@ App({
       //因此在此处加入更新或更换提示
       wx.getSystemInfo({
         success: function (res) {
-          console.log(res)
           // res.system = 'Android 4.8.0'
           //操作系统为安卓的时候
           if (res.system.substring(0, 7) == 'Android') {
@@ -195,8 +208,6 @@ App({
                 cancelText: '不再提示',
                 success: function (res) {
                   if (res.confirm) {
-                    //登录
-                    app.Login()
                     resolve(res)
                   } else if (res.cancel) {
                     wx.setStorageSync('nowarning', true)
@@ -205,13 +216,9 @@ App({
                 }
               })
             } else {
-              //登录
-              app.Login()
               resolve(res)
             }
           } else {
-            //登录
-            app.Login()
             resolve(res)
           }
         },

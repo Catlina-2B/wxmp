@@ -1,0 +1,13 @@
+<view class='box'>
+  <block wx:for="{{list}}" wx:key="key">
+    <view class='list'>
+      <view class='left'>
+        <view class='title'>{{item.title}}</view>
+        <view class='time'>{{item.time}}</view>
+      </view>
+      <view class='right'>
+        <image src='{{item.imagesrc}}'></image>
+      </view>
+    </view>
+  </block>
+</view>

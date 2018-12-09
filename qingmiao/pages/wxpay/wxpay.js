@@ -27,6 +27,10 @@ Page({
   },
 
   pay: function(e){
+    wx.showToast({
+      title: '等待支付',
+      icon: 'loading'
+    })
     const formId = e.detail.formId
     console.log('发起支付')
     const page = this
@@ -42,7 +46,7 @@ Page({
       success: function(res){
         const code = res.code
         //统一下单
-        const money = Number(page.data.money)
+        const money = 1
         wx.request({
           url: page.data.service + '/weixin/pay/unifiedOrder',
           header: {
@@ -86,7 +90,9 @@ Page({
   },
 
   payM: function (res, money, formId, orderId, orderDate){
+    wx.hideToast()
     console.log("formId：" + formId)
+    
     const token = wx.getStorageSync('userToken')
     const page = this
     const key = '24D85E56E7F13AFEB649938AF2433CA1'
@@ -102,65 +108,99 @@ Page({
       success: function(res) {
         console.log(res)
         console.log('支付成功')
+        
       },
       fail: function(res){
         console.log(res)
-        console.log('支付失败')
       },
       complete: function(res){
         console.log('支付完成');
         var url = page.data.url;
+        var submitData = {
+          "feePeriodtype": "YEAR",
+          "feeType": "WX",
+          "mobile": wx.getStorageSync('resData').mobile,
+          "money": money,
+          "scopt": "VIDEOS",
+          "stuName": wx.getStorageSync('studentName'),
+          "studentId": wx.getStorageSync('studentId'),
+          "username": wx.getStorageSync('resData').username,
+          "wxOrder": orderId
+        }
+        console.log(submitData)
         if (res.errMsg == 'requestPayment:ok') {
-          wx.showModal({
-            title: '提示',
-            content: '充值成功',
-            showCancel: false
-          });
-          if (url) {
-            setTimeout(function () {
-              wx.request({
-                url: page.data.service + '/wxLogin/sendTemplateMessage',
-                header: {
-                  Authorization: 'Bearer ' + token
-                },
-                data: {
-                  "data": {
-                    "keyword1":{
-                      "value": "青苗宝贝商品"
-                    },
-                    "keyword2": {
-                      "value": money + "分"
-                    },
-                    "keyword3": {
-                      "value": orderDate
-                    },
-                    "keyword4": {
-                      "value": orderId
-                    },
+          wx.showToast({
+            title: '请稍候',
+            icon: 'loading',
+            duration: 9999999,
+            mask: true
+          })
+          new Promise(function(resolve, reject){
+            wx.request({
+              url: page.data.service + '/wxLogin/sendTemplateMessage',
+              header: {
+                Authorization: 'Bearer ' + token
+              },
+              data: {
+                "data": {
+                  "keyword1": {
+                    "value": "青苗宝贝商品"
                   },
-                  "emphasisKeyword": "keyword2",
-                  "formId": formId,
-                  "page": "pages/index/index",
-                  "templateId": "__RlAU0Dt6ffnz6jGYNjcA8sIDY5qYiHjDiEsjzRwq0",
-                  "timeoutAt": new Date().getTime()
+                  "keyword2": {
+                    "value": money + "分"
+                  },
+                  "keyword3": {
+                    "value": orderDate
+                  },
+                  "keyword4": {
+                    "value": orderId
+                  },
                 },
-                method: "post",
-                success: function (res) {
-                  console.log(res)
-                  wx.redirectTo({
-                    url: '/pages' + url
+                "emphasisKeyword": "keyword2",
+                "formId": formId,
+                "page": "pages/index/index",
+                "templateId": "__RlAU0Dt6ffnz6jGYNjcA8sIDY5qYiHjDiEsjzRwq0",
+                "timeoutAt": new Date().getTime()
+              },
+              method: "post",
+              success: function (res) {
+                console.log(res)
+                resolve()
+              },
+              fail: function (res) {
+                console.log(res)
+                reject()
+              }
+            })
+          }).then(function(){
+            //订单发送到后台
+            wx.request({
+              url: page.data.service + '/feeDetails/management/create',
+              header: {
+                Authorization: 'Bearer ' + token
+              },
+              data: submitData,
+              method: 'post',
+              success: function (res) {
+                console.log(res)
+                wx.hideToast()
+                if (res.statusCode == 200) {
+                  wx.showModal({
+                    title: '提示',
+                    content: '充值成功',
+                    showCancel: false,
+                    success: function (res) {
+                      if (res.confirm) {
+                        wx.switchTab({
+                          url: '../index/index',
+                        })
+                      }
+                    }
                   })
-                },
-                fail: function (res) {
-                  console.log(res)
                 }
-              })
-            }, 10000)
-          } else {
-            setTimeout(() => {
-              wx.navigateBack()
-            }, 2000)
-          }
+              }
+            })
+          })
         }
         return;
       }

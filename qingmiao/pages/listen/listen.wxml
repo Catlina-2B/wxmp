@@ -1,0 +1,25 @@
+<view class='box'>
+  <view class='circle'>
+    <view animation="{{animation1}}">
+      <image src='../../images/titleImage.png'></image>
+    </view>
+  </view>
+  <view class='title'>《{{musicName}}》</view>
+  <view class='timeupdate'>
+    <view>
+      <slider class='play-line-slider' bindchange="listenerSlider" block-size="15" value="{{slider_value}}" activeColor="#E77B6D" backgroundColor="#685D58" min='{{musicMin}}' max='{{musicMax}}' />
+      <view>
+        <view class='thisTime'>{{nowtime}}</view>
+        <view class='thisTime'>{{endtime}}</view>
+      </view>
+    </view>
+  </view>
+  <view class='playBox'>
+    <image class='pre' src='../../images/Prev.png'></image>
+    <image class='audioSplit' src='../../images/audioSplit.png'></image>
+    <image class='play' bindtap='musicPlay' wx:if="{{play == false}}" src='../../images/Play.png'></image>
+    <image class='stop' bindtap='musicStop' wx:if="{{play == true}}" src='../../images/stop.png'></image>
+    <image class='audioSplit' src='../../images/audioSplit.png'></image>
+    <image class='next' src='../../images/next.png'></image>
+  </view>
+</view>

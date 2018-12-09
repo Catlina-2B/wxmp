@@ -2,6 +2,7 @@
 const app = getApp()
 const service = require('../../utils/base.js')
 const saveFormId = require('../../utils/saveFormId.js')
+
 Page({
 
   /**
@@ -10,7 +11,7 @@ Page({
   data: {
     list: '',
     service: service.service.baseUrl,
-    nowChildKlass: wx.getStorageSync('klassId')
+    nowChildKlass: wx.getStorageSync('klassId'),
   },
 
   /**
@@ -36,11 +37,17 @@ Page({
         Authorization: 'Bearer ' + token
       },
       success: function (res) {
-        for(var i in res.data){
-          res.data[i].student.joinedAt = page.confirmTime(res.data[i].student.joinedAt)
+        console.log(res)
+        let data = res.data
+        for(var i in data){
+          data[i].student.joinedAt = page.confirmTime(data[i].student.joinedAt)
+          data[i].animationData = ''
+          data[i].animationData2 = ''
+          data[i].middle = true
         }
+        // console.log(res.data)
         page.setData({
-          list: res.data
+          list: data
         })
       }
     })
@@ -65,11 +72,16 @@ Page({
     const oldKlassId = wx.getStorage({
       key: 'klassId',
       success: function(res) {
+        console.log(page.data.list)
         var index = e.currentTarget.dataset.index
         var klassId = page.data.list[index].student.klass.id
         var schoolId = page.data.list[index].student.klass.schoolId
+        var studentId = page.data.list[index].student.id
+        var studentName = page.data.list[index].student.name
         wx.setStorageSync('klassId', klassId)
         wx.setStorageSync('schoolId', schoolId)
+        wx.setStorageSync('studentId', studentId)
+        wx.setStorageSync('studentName', studentName)
         if (klassId != oldKlassId){
           wx.setStorageSync('fromId', 0)
           wx.setStorageSync('NoticeFromId', 0)
@@ -78,6 +90,16 @@ Page({
           nowChildKlass: klassId
         })
       },
+    })
+  },
+
+  editChild: function(e){
+    // console.log(this.data.list)
+    const index = e.currentTarget.dataset.index
+    const id = this.data.list[index].student.id
+
+    wx.navigateTo({
+      url: '../editChild/editChild?studentId=' + id,
     })
   }
 })

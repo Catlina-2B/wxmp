@@ -21,22 +21,21 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad: function(options) {
     let app = getApp()
     new app.ToastPannel()
-    
+
   },
 
-  openToastPannel: function () {
+  openToastPannel: function() {
     this.show(this.data.content)
   },
 
-  mobileChange: function(e){
-    // console.log(e.detail.value)
+  mobileChange: function(e) {
     this.setData({
       mobile: e.detail.value
     })
-    if(this.data.mobile != ""){
+    if (this.data.mobile != "") {
       this.setData({
         canSubmit: true
       })
@@ -47,8 +46,7 @@ Page({
     }
   },
 
-  secretcodeChange: function(e){
-    // console.log(e.detail.value)
+  secretcodeChange: function(e) {
     this.setData({
       secretcode: e.detail.value
     })
@@ -57,7 +55,7 @@ Page({
   /**
    * 发送验证码
    */
-  getInvat: function () {
+  getInvat: function() {
     if (this.data.canGetInvat == false) return
     const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
     if (!(reg.test(this.data.mobile))) {
@@ -71,13 +69,12 @@ Page({
     wx.request({
       url: page.data.service + '/wxLogin/web/sendMsmCode?mobile=' + page.data.mobile,
       method: 'post',
-      success: function (res) {
-        console.log(res)
+      success: function(res) {
         let t = 20
         page.setData({
           canGetInvat: false
         })
-        let timer = setInterval(function () {
+        let timer = setInterval(function() {
           page.setData({
             invat: t + 's'
           })
@@ -87,8 +84,7 @@ Page({
               canGetInvat: true,
               invat: '重新发送'
             })
-          }
-          else t--
+          } else t--
         }, 1000)
       }
     })
@@ -97,159 +93,208 @@ Page({
   /**
    * 提交表单
    */
-  formSubmit: function(e){
-    
+  formSubmit: function(e) {
+
     const page = this
-    if(this.data.canSubmit == false) return
+    if (this.data.canSubmit == false) return
     //验证数据格式
     const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
-    if(!(reg.test(page.data.mobile))){
+    if (!(reg.test(page.data.mobile))) {
       this.setData({
         content: '手机号不存在'
       })
       this.openToastPannel()
       return
     }
-    if (page.data.secretcode == ''){
+    if (page.data.secretcode == '') {
       this.setData({
         content: '请输入验证码'
       })
       this.openToastPannel()
       return
     }
-    
+    //注册
     this.login()
-    
+
   },
 
-  login: function(){
+  login: function() {
     const page = this
     const ActiveType = 'LOGIN'
-    return new Promise(function(resolve, reject){
+    return new Promise(function(resolve, reject) {
       wx.login({
-        success: function (res) {
+        success: function(res) {
           const code2 = res.code
-          // console.log(code2)
           // return
           const mobile = page.data.mobile
           wx.request({
-            url: page.data.service + '/wxLogin/web/wxUsersTest?code=' + code2 + '&mobile=' + mobile + '&verificationCode=' + page.data.secretcode,
+            url: page.data.service + '/wxLogin/web/wxUsersRegr',
             method: 'post',
             header: {
               "Content-Type": "application/json"
             },
-            success: function (res2) {
+            data: {
+              code: code2,
+              mobile: mobile,
+              verificationCode: page.data.secretcode
+            },
+            success: function(res2) {
               console.log(res2)
               if (res2.statusCode == 200) {
-                wx.login({
-                  success: function (res3) {
-                    wx.request({
-                      url: page.data.service + '/wxLogin/web/wxTokens?code=' + res3.code,
-                      method: 'post',
-                      success: function (res) {
-                        console.log(res)
-                        // wx.redirectTo({
-                        //   url: '../login/login',
-                        // })
-                        wx.setStorageSync('resData', res.data)
-                        // res.statusCode = 500
-                        wx.showToast({
-                          title: '登录中',
-                          icon: 'loading'
-                        })
-                        if (res.statusCode != 500) {
-                          const loginTime = new Date().getTime()
-                          wx.setStorageSync('loginTime', loginTime)
-                          app.globalData.schoolId = res.data.schools[0].id
-                          wx.setStorageSync('schoolId', res.data.schools[0].id)
-                          wx.request({
-                            url: service.service.baseUrl + '/tokens/school/' + app.globalData.schoolId,
-                            header: {
-                              Authorization: 'Bearer ' + res.data.token
-                            },
-                            method: 'post',
-                            success: function (res) {
-                              // console.log(res)
-                              if (res.data.patriarch != null) {
-                                if (res.data.patriarch.guardians.length != 0) {
-                                  wx.setStorageSync('klassId', res.data.patriarch.guardians[0].klass.id)
-                                }
-                                wx.setStorageSync('userToken', res.data.token)
-                                resolve(res)
-                                // countActive(res)
-                                countActive(ActiveType, res.data.token)
-                                wx.hideToast()
-                                wx.switchTab({
-                                  url: '../index/index',
-                                })
-                                
-                              } else if (res.data.teacher != null) {
-                                wx.setStorageSync('klassId', res.data.teacher.klass[0].id)
-                                wx.setStorageSync('userToken', res.data.token)
-                                resolve(res)
-                                // countActive(res)
-                                countActive(ActiveType, res.data.token)
-                                wx.hideToast()
-                                wx.switchTab({
-                                  url: '../index/index',
-                                })
-                                
-                              } else {
-                                wx.hideToast()
-                                wx.showModal({
-                                  title: '温馨提示',
-                                  content: '此程序仅限家长与老师使用',
-                                  showCancel: false,
-                                  success: function () {
-                                    wx.setStorageSync('userToken', res.data.token)
+                if (res2.data.errCode) {
+                  if (res2.data.errCode == 4000) {
+                    //注册成功
+                    wx.login({
+                      success: function (res3) {
+                        wx.request({
+                          url: page.data.service + '/wxLogin/web/wxTokens?code=' + res3.code,
+                          method: 'post',
+                          success: function (res4) {
+                            // res.statusCode = 500
+                            wx.showToast({
+                              title: '登录中',
+                              icon: 'loading'
+                            })
+                            if (res4.statusCode == 200) {
+                              wx.setStorageSync('resData', res4.data)
+
+                              const loginTime = new Date().getTime()
+                              wx.setStorageSync('loginTime', loginTime)
+                              app.globalData.schoolId = res4.data.schools[0].id
+                              wx.setStorageSync('schoolId', res4.data.schools[0].id)
+                              wx.request({
+                                url: service.service.baseUrl + '/tokens/school/' + app.globalData.schoolId,
+                                header: {
+                                  Authorization: 'Bearer ' + res4.data.token
+                                },
+                                method: 'post',
+                                success: function (res5) {
+                                  if (res5.data.patriarch != null) {
+                                    if (res5.data.patriarch.guardians.length != 0) {
+                                      wx.setStorageSync('klassId', res5.data.patriarch.guardians[0].klass.id)
+                                    }
+                                    wx.setStorageSync('userToken', res5.data.token)
+                                    wx.setStorageSync('actorId', res5.data.patriarch.actor.id)
+                                    wx.setStorageSync('studentId', res5.data.patriarch.guardians[0].student.id)
+                                    wx.setStorageSync('studentName', res5.data.patriarch.guardians[0].student.name)
+                                    resolve()
                                     // countActive(res)
                                     countActive(ActiveType, res.data.token)
+                                    wx.hideToast()
                                     wx.switchTab({
                                       url: '../index/index',
                                     })
+
+                                  } else if (res5.data.teacher != null) {
+                                    wx.setStorageSync('klassId', res5.data.teacher.klass[0].id)
+                                    wx.setStorageSync('userToken', res5.data.token)
+                                    resolve()
+                                    // countActive(res)
+                                    countActive(ActiveType, res5.data.token)
+                                    wx.hideToast()
+                                    wx.switchTab({
+                                      url: '../index/index',
+                                    })
+
+                                  } else {
+                                    wx.hideToast()
+                                    wx.showModal({
+                                      title: '温馨提示',
+                                      content: '此程序仅限家长与老师使用',
+                                      showCancel: false,
+                                      success: function () {
+                                        wx.setStorageSync('userToken', res5.data.token)
+                                        // countActive(res)
+                                        countActive(ActiveType, res5.data.token)
+                                        wx.switchTab({
+                                          url: '../index/index',
+                                        })
+                                      }
+                                    })
+                                    resolve()
                                   }
+                                }
+                              })
+                            }
+                          }
+                        })
+                      }
+                    })
+                  } else if (res2.data.errCode == 4001 || res2.data.errCode == 4003) {
+                    //未被邀请
+                    wx.showModal({
+                      title: '提示',
+                      content: '您暂未被邀请，请扫描学校二维码',
+                      confirmText: '好的',
+                      cancelText: '再想想',
+                      success: function (res) {
+                        if (res.confirm) {
+                          wx.scanCode({
+                            success(res) {
+                              console.log(res)
+                              console.log(Number(res.result.substring(18, res.result.length)))
+                              if (res.result.substring(0, 17) != 'k12_soft_schoolId') {
+                                wx.showModal({
+                                  title: '提示',
+                                  content: '请扫描正确二维码',
                                 })
-                                resolve(res)
+                              } else {
+                                const schoolId = res.result.substring(18, res.result.length)
+                                const mobile = page.data.mobile
+                                console.log(schoolId)
+                                wx.navigateTo({
+                                  url: '../chooseKlass/chooseKlass?schoolId=' + schoolId + '&mobile=' + mobile,
+                                })
                               }
                             }
                           })
-                        } else {
-                          wx.hideToast()
-                          wx.showModal({
-                            title: '提示',
-                            content: '登录失败，请重新登录',
-                            showCancel: false,
-                            success: function () {
-                              wx.redirectTo({
-                                url: '/pages/login/login',
-                              })
-                            }
-                          })
-                          reject('error')
                         }
                       }
                     })
-                  }
-                })
-              } else {
-                console.log(res)
-                wx.showModal({
-                  title: '提示',
-                  content: '注册失败，请重试',
-                })
+                  } else if (res2.data.errCode == 4002) {
+                    //验证码不匹配
+                    wx.showModal({
+                      title: '提示',
+                      content: '验证码错误，请重新输入',
+                      showCancel: false
+                    })
+                  } 
+                }
+              } else if (res2.statusCode == 500) {
+                console.log(res2.data.message)
+                if (res2.data.message === "{errCode=4002, errMsg=验证码不匹配}") {
+                  wx.showModal({
+                    title: '提示',
+                    content: '验证码错误',
+                    showCancel: false
+                  })
+                } else if (res2.data.message == "{errCode=4004, errMsg=手机号已存在}") {
+                  //手机号已存在
+                  wx.showModal({
+                    title: '提示',
+                    content: '手机号已存在，请直接登录',
+                    showCancel: false
+                  })
+                } else {
+                  wx.showModal({
+                    title: '提示',
+                    content: '注册失败，请检查网络后重试。',
+                    showCancel: false
+                  })
+                }
               }
             },
-            fail: function (res){
-              console.log(res)
+            fail: function(err) {
               wx.showModal({
                 title: '提示',
-                content: '注册失败，请重试',
+                content: '注册失败，请检查网络后重试',
+                showCancel: false
               })
             }
           })
         }
       })
-    }).then(function(res){
+    }).then(function(res) {
       let token1 = wx.getStorageSync('userToken')
       wx.request({
         url: page.data.service + '/api/tp/aliyun/bd-token',
@@ -257,8 +302,7 @@ Page({
         header: {
           Authorization: 'Bearer ' + token1
         },
-        success: function (res) {
-          console.log(res)
+        success: function(res) {
           if (res.statusCode == 500) {
 
           } else if (res.statusCode == 200) {
@@ -273,7 +317,7 @@ Page({
     })
   },
 
-  serviceBook: function(){
+  serviceBook: function() {
     wx.navigateTo({
       url: '../serviceBook/serviceBook',
     })

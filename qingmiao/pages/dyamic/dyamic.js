@@ -19,12 +19,11 @@ Page({
    */
   onLoad: function(options) {
     if (options.goId){
-      console.log(options.goId)
       this.setData({
         goId: options.goId
       })
     } else {
-      console.log('没有goId')
+      // console.log('没有goId')
     }
 
     //获取最新数据放入已读
@@ -47,7 +46,6 @@ Page({
       success: function(res) {
         countActive(page.data.ActiveType, wx.getStorageSync('userToken'))
         var str = "https://www.k12soft.net/kdweb/dongtai/#/?cd=" + res.code + '&goId=' + page.data.goId + "&t=" + Math.random() * 100
-        console.log(str)
         page.setData({
           WebSrc: str
         })

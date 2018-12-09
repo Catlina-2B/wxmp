@@ -107,7 +107,6 @@ Page({
       var d = new Date().getDate()
       if (d < 10) d = '0' + d
       date = y + '-' + m + '-' + d
-      // console.log(date)
     }
     page.setData({
       nowDate: date
@@ -119,7 +118,6 @@ Page({
         Authorization: 'Bearer ' + token
       },
       success: function(res) {
-        console.log(res)
         let allEvalute = res.data[0]
         page.setData({
           allEvalute: allEvalute,
@@ -146,7 +144,6 @@ Page({
   historyWeek: function() {
     const page = this
     const token = wx.getStorageSync('userToken')
-    console.log(page.data.studentMsg)
     const studentId = page.data.studentMsg.student.id
     wx.request({
       url: page.data.service + '/weeklyrRemark/management/findDate?studentId=' + studentId,
@@ -154,7 +151,6 @@ Page({
         Authorization: 'Bearer ' + token
       },
       success: function (res) {
-        console.log(res)
         let newArray = []
         for(var i in res.data){
           newArray.push(res.data[i].date)
@@ -169,7 +165,6 @@ Page({
   },
 
   bindPickerChange: function(e) {
-    console.log(e)
     e.currentTarget.dataset.date = this.data.dateList2[e.detail.value]
     this.thisWeek(e)
   },
@@ -197,7 +192,6 @@ Page({
       },
       method: 'put',
       success: function (res) {
-        console.log(res)
         if(res.statusCode == 200){
           wx.showModal({
             title: '提示',

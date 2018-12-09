@@ -37,7 +37,6 @@ Page({
    * 验证
    */
   vaild: function (e) {
-    // console.log(e)
     const data = this.data.myData
     let data2 = e.currentTarget.dataset
     for (let i in data) {
@@ -101,7 +100,6 @@ Page({
       myData: data
     })
     const submitData = this.data.myData
-    console.log(submitData)
     submitData.secretCode = Number(submitData.secretCode)
     const page = this
     wx.request({
@@ -112,7 +110,6 @@ Page({
         password: submitData.password
       },
       success: function(res){
-        console.log(res)
         if (res.statusCode != 200) return
         page.setData({
           content: '修改成功'
@@ -143,7 +140,6 @@ Page({
       url: page.data.service + '/users/' + this.data.myData.mobile + '/password',
       method: 'post',
       success: function(res){
-        console.log(res)
         let t = 20
         page.setData({
           canGetInvat: false

@@ -57,7 +57,6 @@ Page({
   },
 
   detail: function(e){
-    console.log(e)
     wx.navigateTo({
       url: '../childDetail/childDetail?msg=' + JSON.stringify(this.data.childList[e.currentTarget.dataset.index]),
     })
@@ -72,7 +71,6 @@ Page({
         Authorization: 'Bearer ' + token
       },
       success: function (res) {
-        console.log(res)
         page.setData({
           childList: res.data
         })

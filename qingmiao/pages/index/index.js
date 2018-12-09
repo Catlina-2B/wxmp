@@ -3,6 +3,7 @@
 const app = getApp()
 const service = require('../../utils/base.js')
 const saveFormId = require('../../utils/saveFormId.js')
+const formatTime = require('../../utils/util.js')
 
 Page({
   data: {
@@ -16,12 +17,29 @@ Page({
     duration: 500,
     asrc: '',
     service: service.service.baseUrl,
-    nav: [
+    topTab: [
       {
-        url: '../kindergartenHub/kindergartenHub',
-        imageSrc: '../../images/yuansuohuodong.png',
-        text: '园所官网'
+        imageSrc: 'https://www.k12soft.net/kdweb/newImage/dainping.png',
+        title1: '一周',
+        title2: '点评',
+        url: '../familySchool/familySchool',
+        count: ''
       },
+      {
+        imageSrc: 'https://www.k12soft.net/kdweb/newImage/banjidongtai.png',
+        title1: '班级',
+        title2: '动态',
+        url: '../dyamic/dyamic?goId=1',
+        count: ''
+      },
+      {
+        imageSrc: 'https://www.k12soft.net/kdweb/newImage/chuqiandaka.png',
+        title1: '出勤',
+        title2: '打卡',
+        url: '../attendance/attendance',
+      }
+    ],
+    nav: [
       {
         url: '../notice/notice?goId=3',
         imageSrc: '../../images/tongzhitixing.png',
@@ -34,9 +52,9 @@ Page({
         text: '班级计划'
       },
       {
-        url: '../attendance/attendance',
-        imageSrc: '../../images/chuqinguanli.png',
-        text: '出勤管理'
+        url: '../information/information?goId=4',
+        imageSrc: '../../images/tijian.png',
+        text: '体检'
       },
       {
         url: '../cookBook/cookBook',
@@ -48,21 +66,20 @@ Page({
         imageSrc: '../../images/banjijiaoshi.png',
         text: '班级教师'
       },
-      // {
-      //   url: '../attSeconds/attSeconds',
-      //   imageSrc: '../../images/budaka.png',
-      //   text: '儿童补录'
-      // },
-      {
-        url: '../dyamic/dyamic?goId=1',
-        imageSrc: '../../images/banjixiangce.png',
-        text: '班级动态',
-        count: 1,
-      },
       {
         url: '../homeWork/homeWork',
         imageSrc: '../../images/qinzizuoye.png',
         text: '亲子作业'
+      },
+      {
+        url: '../kindergartenHub/kindergartenHub',
+        imageSrc: '../../images/yuansuoguanwang.png',
+        text: '园所官网'
+      },
+      {
+        url: '../medicine/medicine',
+        imageSrc: '../../images/weiyaojihua.png',
+        text: '喂药计划'
       },
       {
         url: '../children/children',
@@ -70,23 +87,11 @@ Page({
         text: '班级幼儿'
       },
       {
-        url: '../familySchool/familySchool',
-        imageSrc: '../../images/jiayuanlianxi.png',
-        text: '一周点评',
-        count: 1,
-      },
-      {
-        url: '../medicine/medicine',
-        imageSrc: '../../images/jiayuanlianxi.png',
-        text: '喂药系统'
+        url: '../klassLive/klassLive',
+        imageSrc: '../../images/banjizhibo.png',
+        text: '班级直播'
       }
     ]
-  },
-  //事件处理函数
-  bindViewTap: function() {
-    wx.navigateTo({
-      url: '../logs/logs'
-    })
   },
   onLoad: function (options) {
     if (app.globalData.goId == 3) {
@@ -94,10 +99,15 @@ Page({
       wx.navigateTo({
         url: '../notice/notice?goId=3',
       })
-    } else if (app.globalData.goId == 2) {
+    } else if (app.globalData.goId == 1) {
       app.globalData.goId = ''
       wx.navigateTo({
-        url: '../plan/plan?goId=2',
+        url: '../plan/plan?goId=1',
+      })
+    } else if (app.globalData.goId == 4) {
+      app.globalData.goId = ''
+      wx.navigateTo({
+        url: '../information/information?goId=4',
       })
     }
     const code = wx.getStorageSync("code")
@@ -111,40 +121,109 @@ Page({
   },
 
   onShow: function(){
-    //获取班级动态数量
-    this.getFeeds()
-    //获取未读通知
-    this.getNoticeUnread()
-    //获取未反馈点评数量
-    this.getFamilySchool()
+    const page = this
+    if (!wx.getStorageSync('userToken')) {
+      setTimeout(function(){
+        //获取班级动态数量
+        page.getFeeds()
+        //获取未读通知
+        page.getNoticeUnread()
+        //获取未反馈点评数量
+        page.getFamilySchool()
 
-    app.globalData.userToken = wx.getStorageSync('userToken')
-    app.globalData.klassId = wx.getStorageSync('klassId')
-    //获取园所图片
-    this.getImg()
+        app.globalData.userToken = wx.getStorageSync('userToken')
+        app.globalData.klassId = wx.getStorageSync('klassId')
+        //获取园所图片
+        page.getImg()
+      },1000)
+    } else {
+      //获取班级动态数量
+      page.getFeeds()
+      //获取未读通知
+      page.getNoticeUnread()
+      //获取未反馈点评数量
+      page.getFamilySchool()
+
+      app.globalData.userToken = wx.getStorageSync('userToken')
+      app.globalData.klassId = wx.getStorageSync('klassId')
+      //获取园所图片
+      page.getImg()
+    }
+    
   },
   
   go: function (e) {
-    // console.log(e)
     saveFormId(e.detail.formId)
     const index = e.currentTarget.dataset.id
     let thisUrl = this.data.nav[index].url
 
+    // wx.navigateTo({
+    //   url: thisUrl,
+    // })
+    const page = this
+    const token = wx.getStorageSync('userToken')
+    const actorId = wx.getStorageSync('actorId')
+    if(index == 9){
+      const d = new Date()
+      let t = formatTime.formatTime(d)
+      wx.request({
+        url: page.data.service + '/feeDetails/management/findBy?localDate=' + t + '&actorId=' + actorId,
+        header: {
+          Authorization: 'Bearer ' + token
+        },
+        method: 'get',
+        success: function(res){
+          console.log(res)
+          if (res.data == [] || res.data.isState == false || res.data == ''){
+            //没有权限观看视频
+            wx.showModal({
+              title: '温馨提示',
+              content: '您暂无观看班级直播权限，确认前往购买吗？',
+              confirmText: '确认',
+              cancelText: '取消',
+              success: function(res){
+                if(res.confirm){
+                  wx.navigateTo({
+                    url: '../wxpay/wxpay'
+                  })
+                }
+              }
+            })
+          } else {
+            let data = res.data
+            const studentId = wx.getStorageSync('studentId')
+            for(var i in data){
+              if (data[i].stuId == studentId && data[i].isState == true){
+                wx.showModal({
+                  title: '温馨提示',
+                  content: '您已购买，请前往“青苗宝贝”公众号下载APP观看班级直播视频',
+                  showCancel: false,
+                  confirmText: '我知道了'
+                })
+              }
+            }
+          }
+        },
+        fail: function(err){
+          console.log(err)
+        }
+      })
+    }
+    else {
+      wx.navigateTo({
+        url: thisUrl,
+      })
+    }
+  },
+
+  go2: function(e){
+    saveFormId(e.detail.formId)
+    const index = e.currentTarget.dataset.id
+    let thisUrl = this.data.topTab[index].url
+
     wx.navigateTo({
       url: thisUrl,
     })
-
-    // if(index == 9){
-    //   wx.showModal({
-    //     title: '温馨提示',
-    //     content: '该模块暂未更新，敬请期待！',
-    //     showCancel: false,
-    //   })
-    // } else {
-    //   wx.navigateTo({
-    //     url: thisUrl,
-    //   })
-    // }
   },
 
   getFeeds: function(){
@@ -160,10 +239,9 @@ Page({
         Authorization: 'Bearer ' + token
       },
       success: function(res){
-        // console.log(res)
         const count = res.data.count
         page.setData({
-          ['nav[6].count']: count
+          ['topTab[1].count']: count
         })
       }
     })
@@ -184,7 +262,7 @@ Page({
       success: function (res) {
         const count = res.data.NOTICE
         page.setData({
-          ['nav[1].count']: count
+          ['nav[0].count']: count
         })
       }
     })
@@ -199,9 +277,8 @@ Page({
         Authorization: 'Bearer ' + token
       },
       success: function (res) {
-        console.log(res)
         page.setData({
-          ['nav[9].count']: res.data
+          ['topTab[0].count']: res.data
         })
       }
     })
@@ -217,7 +294,6 @@ Page({
         Authorization: 'Bearer ' + token
       },
       success: function(res){
-        // console.log(res)
         const first = 'https://' + res.data[0].firstImg
         const center = 'https://' + res.data[0].centerImg
         const last = 'https://' + res.data[0].lastImg
@@ -231,7 +307,6 @@ Page({
   },
 
   ImgTap: function(e){
-    // console.log(e)
 
     // if(e.currentTarget.dataset.index == 2){
     //   wx.navigateTo({
@@ -241,7 +316,6 @@ Page({
   },
 
   getFormId: function(e){
-    // console.log(e)
     saveFormId(e.detail.formId)
   }
 })

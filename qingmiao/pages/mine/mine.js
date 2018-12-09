@@ -21,7 +21,7 @@ Page({
         path: '../forget/forget'
       },
       {
-        title: '版本号：1.1.4',
+        title: '版本号：2.0.0',
         path: ''
       },
       {
@@ -59,7 +59,6 @@ Page({
     wx.login({
       success: res => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        // console.log(res.code)
         wx.setStorageSync('code', res.code)
         wx.request({
           url: service.service.baseUrl + '/wxLogin/web/wxTokens?code=' + res.code,
@@ -68,7 +67,6 @@ Page({
             "Content-Type": "application/json"
           },
           success: function (res) {
-            console.log(res)
             wx.setStorageSync('resData', res.data)
             // res.statusCode = 500
             if (res.statusCode != 500) {
@@ -83,7 +81,6 @@ Page({
                 },
                 method: 'post',
                 success: function (res) {
-                  // console.log(res)
                   if (res.data.patriarch != null) {
                     if (res.data.patriarch.guardians.length != 0) {
                       wx.setStorageSync('klassId', res.data.patriarch.guardians[0].klass.id)

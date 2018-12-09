@@ -25,7 +25,6 @@ Page({
         Authorization: 'Bearer ' + token
       },
       success: function (res){
-        // console.log(res)
         page.setData({
           list: res.data
         })

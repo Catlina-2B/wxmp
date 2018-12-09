@@ -26,7 +26,6 @@ Page({
       },
       success: function (res) {
         let data = res.data
-        console.log(res)
         data = data.reverse()
 
         for (var i in data) {
@@ -42,8 +41,6 @@ Page({
           var day2 = new Date().getDate()
           var h2 = new Date().getHours()
           var s2 = new Date().getMinutes()
-          // console.log(year + '年' + month + '月' + day + '日' + h + '时' + s + '分')
-          // console.log(year2 + '年' + month2 + '月' + day2 + '日' + h2 + '时' + s2 + '分')
           if (year == year2) {
             if (month == month2) {
               if (day == day2) {
@@ -64,7 +61,6 @@ Page({
             data[i].createdAt = year + '年' + month + '月' + day + '日' + h + ':' + s
           }
         }
-        // console.log(data)
         page.setData({
           activity: data
         })
@@ -131,7 +127,6 @@ Page({
     str = str.replace(/&nbsp;/g, "@")
     str = str.replace(/&quot;/g, "")
     str = str.replace(/&#39;/g, "\'")
-    // console.log(str)
 
     wx.navigateTo({
       url: '../activityDetail/activityDetail?id=' + id + '&data=' + str + '&title=' + title,

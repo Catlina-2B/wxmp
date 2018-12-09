@@ -9,7 +9,7 @@ const saveFormId = function (formId){
   }
   formIds.push(data)
   app.globalData.gloabalFomIds = formIds
-  console.log(app.globalData.gloabalFomIds)
+  // console.log(app.globalData.gloabalFomIds)
 }
 
 module.exports = saveFormId

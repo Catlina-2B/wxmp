@@ -1,7 +1,6 @@
 {
   "pages":[
     "pages/index/index",
-    "pages/information/information",
     "pages/login/login",
     "pages/forget/forget",
     "pages/attendance/attendance",
@@ -17,6 +16,7 @@
     "pages/kindergartenHub/kindergartenHub",
     "pages/dyamic/dyamic",
     "pages/activityWeb/activityWeb",
+    "pages/information/information",
     "pages/device/device",
     "pages/attSeconds/attSeconds",
     "pages/wxpay/wxpay",
@@ -29,31 +29,39 @@
     "pages/medicine/medicine",
     "pages/commitMedicine/commitMedicine",
     "pages/medicineing/medicineing",
-    "pages/medicineHistory/medicineHistory"
+    "pages/medicineHistory/medicineHistory",
+    "pages/teachChild/teachChild",
+    "pages/editChild/editChild",
+    "pages/chooseKlass/chooseKlass",
+    "pages/klassLive/klassLive",
+    "pages/story/story",
+    "pages/listen/listen",
+    "pages/teachInformation/teachInformation"
+
   ],
   "window":{
     "backgroundTextStyle":"light",
-    "navigationBarBackgroundColor": "#87CEFA",
+    "navigationBarBackgroundColor": "#70BDFE",
     "navigationBarTitleText": "青苗宝贝",
     "navigationBarTextStyle":"white"
   },
   "tabBar": {
     "color": "#96A5A4",
-    "selectedColor": "#6AA545",
+    "selectedColor": "#76C3FE",
     "backgroundColor": "#ffffff",
     "borderStyle": "#E7E7E7",
     "list": [
-      {
-        "pagePath": "pages/information/information",
-        "text": "体检通知",
-        "iconPath": "images/information.png",
-        "selectedIconPath": "images/information2.png"
-      },
       {
         "pagePath": "pages/index/index",
         "text": "首页",
         "iconPath": "images/home.png",
         "selectedIconPath": "images/home2.png"
+      },
+      {
+        "pagePath": "pages/teachChild/teachChild",
+        "text": "育儿专栏",
+        "iconPath": "images/yuer.png",
+        "selectedIconPath": "images/yuer2.png"
       },
       {
         "pagePath": "pages/mine/mine",

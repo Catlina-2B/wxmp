@@ -1,4 +1,5 @@
 // pages/information/information.js
+const app = getApp()
 const service = require('../../utils/base.js')
 import reset from '../../utils/dic.js'
 Page({
@@ -29,8 +30,13 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
-    
+  onLoad: function(options) {
+    if (!options.goId) {
+      app.globalData.goId = 4
+      wx.switchTab({
+        url: '../index/index',
+      })
+    }
     //首次进入先查今日的
     let y = new Date().getFullYear()
     let m = new Date().getMonth() + 1
@@ -47,16 +53,16 @@ Page({
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
-    
+  onShow: function() {
+
   },
 
-  getData: function(){
+  getData: function() {
     //为了防止登录失败，重新调用一次
     this.getNewData()
   },
 
-  getNewData: function(){
+  getNewData: function() {
     const page = this
     const token = wx.getStorageSync('userToken')
     let date = this.data.nowDate
@@ -68,8 +74,7 @@ Page({
       data: {
         date: date
       },
-      success: function (res) {
-        // console.log(res)
+      success: function(res) {
         if (res.statusCode == 200) {
           var data3 = res.data
           var nowData = []
@@ -80,14 +85,12 @@ Page({
             nowData: nowData
           })
           let data = page.data.nowData
-          // console.log(data)
           for (var i in data) {
             data[i].data2 = reset(data[i].data)
             if (data[i].type == "MORNING") data[i].type2 = "晨检通知"
             if (data[i].type == "NOON") data[i].type2 = "午检通知"
             if (data[i].type == "NIGHT") data[i].type2 = "晚检通知"
           }
-          // console.log(data)
           page.setData({
             nowData: data
           })
@@ -95,22 +98,22 @@ Page({
           page.getData()
         }
       },
-      fail: function (res) {
+      fail: function(res) {
         page.getData()
       }
     })
   },
 
-  tableTab: function(e){
+  tableTab: function(e) {
     this.setData({
       nowTab: e.currentTarget.dataset.id
     })
-    if(this.data.nowTab == 0){
+    if (this.data.nowTab == 0) {
       let y = new Date().getFullYear()
       let m = new Date().getMonth() + 1
       let d = new Date().getDate()
-      if(m < 10) m = "0" + m
-      if(d < 10) d = "0" + d
+      if (m < 10) m = "0" + m
+      if (d < 10) d = "0" + d
       let time = y + '-' + m + '-' + d
       this.setData({
         nowDate: time

@@ -27,25 +27,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    
-  },
-
-  onShow: function(){
-    const userinfo = wx.getStorageSync('resData')
-    if (userinfo.gender == 'MALE') {
-      this.setData({
-        index: 0
-      })
-    } else {
-      this.setData({
-        index: 1
-      })
-    }
-    this.setData({
-      'formData.gender': userinfo.gender,
-      username: wx.getStorageSync("resData").username,
-      'formData.username': wx.getStorageSync("resData").username
-    })
     if (wx.getStorageSync("resData").avatar == ""){
       this.setData({
         imgsrc: 'https://bdhead.oss-cn-beijing.aliyuncs.com/1540889884667.jpg'
@@ -66,6 +47,24 @@ Page({
     }
   },
 
+  onShow: function(){
+    const userinfo = wx.getStorageSync('resData')
+    if (userinfo.gender == 'MALE') {
+      this.setData({
+        index: 0
+      })
+    } else {
+      this.setData({
+        index: 1
+      })
+    }
+    this.setData({
+      'formData.gender': userinfo.gender,
+      username: wx.getStorageSync("resData").username,
+      'formData.username': wx.getStorageSync("resData").username
+    })
+  },
+
   bindPickerChange: function (e) {
     this.setData({
       index: e.detail.value
@@ -82,7 +81,6 @@ Page({
   },
 
   changeName: function(e){
-    // console.log(e)
     const val = e.detail.value
     this.setData({
       'formData.username': val
@@ -90,7 +88,6 @@ Page({
   },
 
   chooseImg: function(e){
-    console.log(e.currentTarget.dataset.imgindex)
     this.uploadImg(e.currentTarget.dataset.imgindex)
   },
 
@@ -118,12 +115,14 @@ Page({
           //图片路径可自行修改
           uploadImage(res.tempFilePaths[i], 'cbb/' + nowTime + '/',
             function (result) {
-              // console.log("======上传成功图片地址为：", result);
+              console.log("======上传成功图片地址为：", result);
+              console.log(index)
               if(index == 1){
                 page.setData({
                   imgsrc: result
                 })
-              } else {
+              }
+              if (index == 2) {
                 page.setData({
                   imgsrc2: result
                 })
@@ -147,7 +146,6 @@ Page({
       submitData.avatar = submitData.avatar.substring(8, submitData.avatar.length)
       submitData.portrait = submitData.portrait.substring(8, submitData.portrait.length)
     }
-    console.log(submitData)
     const token = wx.getStorageSync('userToken')
     wx.request({
       url: service.service.baseUrl + '/api/users',
@@ -157,7 +155,6 @@ Page({
       },
       data: submitData,
       success: function(res){
-        // console.log(res)
         let dd = wx.getStorageSync('resData')
         const resdata = wx.getStorageSync('resData')
         dd.username = submitData.username

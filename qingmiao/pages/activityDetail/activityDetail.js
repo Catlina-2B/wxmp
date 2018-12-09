@@ -27,7 +27,6 @@ Page({
       if (data[i] === '@') data[i] = '&nbsp;'
     }
     data = data.join("")
-    // console.log(data)
     // if (data.content.indexOf("UTF-8") == 0) console.log(data.content)
     this.setData({
       title: title,

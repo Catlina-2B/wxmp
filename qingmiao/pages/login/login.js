@@ -33,7 +33,6 @@ Page({
     return new Promise(function(resolve, reject){
       wx.login({
         success: res => {
-          console.log(res.code)
           wx.request({
             url: page.data.service + '/wxLogin/web/wxTokensPWD?code=' + res.code,
             data: {
@@ -42,7 +41,18 @@ Page({
             },
             method: 'post',
             success: function (res) {
-              console.log(res)
+              if(res.statusCode == 500){
+                if (res.data.message == "帐号未激活，请先激活") {
+                  wx.showModal({
+                    title: '提示',
+                    content: '账号未激活，请咨询老师激活账号。',
+                    showCancel: false,
+                    confirmText: '知道了'
+                  })
+                }
+                return
+              }
+              
               wx.setStorageSync('resData', res.data)
               const token = res.data.token
               const schoolId = res.data.schools[0].id
@@ -55,7 +65,6 @@ Page({
                 },
                 method: 'post',
                 success: function (res) {
-                  console.log(res)
                   wx.showToast({
                     title: '登录中',
                     icon: 'loading'
@@ -65,6 +74,9 @@ Page({
                       wx.setStorageSync('klassId', res.data.patriarch.guardians[0].klass.id)
                     }
                     wx.setStorageSync('userToken', res.data.token)
+                    wx.setStorageSync('actorId', res.data.patriarch.actor.id)
+                    wx.setStorageSync('studentId', res.data.patriarch.guardians[0].student.id)
+                    wx.setStorageSync('studentName', res.data.patriarch.guardians[0].student.name)
                     resolve(res)
                     // page.countActive(res)
                     countActive(page.data.ActiveType, res.data.token)
@@ -123,7 +135,6 @@ Page({
           Authorization: 'Bearer ' + token1
         },
         success: function (res) {
-          console.log(res)
           if (res.statusCode == 500) {
 
           } else if (res.statusCode == 200) {
@@ -156,7 +167,6 @@ Page({
   vaildMobile: function(){
     const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
     if (!reg.test(this.data.mobile)){
-      console.log("请输入正确手机号！")
       this.setData({
         mobileVaild: false
       })
@@ -169,7 +179,6 @@ Page({
 
   vaildPassword: function(){
     if(this.data.password == '') {
-      console.log("请输入密码")
       this.setData({
         passwordVaild: false
       })

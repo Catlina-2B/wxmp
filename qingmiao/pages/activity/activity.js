@@ -24,7 +24,6 @@ Page({
         Authorization: 'Bearer ' + token
       },
       success: function (res) {
-        // console.log(res)
         let data = res.data.createds
         data = data.reverse()
 
@@ -41,8 +40,6 @@ Page({
           var day2 = new Date().getDate()
           var h2 = new Date().getHours()
           var s2 = new Date().getMinutes()
-          // console.log(year + '年' + month + '月' + day + '日' + h + '时' + s + '分')
-          // console.log(year2 + '年' + month2 + '月' + day2 + '日' + h2 + '时' + s2 + '分')
           if (year == year2) {
             if (month == month2) {
               if (day == day2) {
@@ -63,7 +60,6 @@ Page({
             data[i].createdAt = year + '年' + month + '月' + day + '日' + h + ':' + s
           }
         }
-        // console.log(data)
         page.setData({
           activity: data
         })
@@ -134,7 +130,6 @@ Page({
       if (str[i] == '.') str[i] = str[i].replace('.', "bbb")
     }
     str = str.join("")
-    // console.log(str)
     wx.navigateTo({
       url: "../activityWeb/activityWeb?data=" + str,
     })

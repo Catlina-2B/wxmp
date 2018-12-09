@@ -171,9 +171,8 @@ Page({
    * 多项选择
    */
   bindMultiPickerChange: function (e) {
-    // console.log(e)
     const temperature = this.data.multiArray[0][e.detail.value[0]] + '.' + this.data.multiArray[1][e.detail.value[1]]
-    // console.log(temperature)
+    
     this.setData({
       multiIndex: e.detail.value,
       temperature: temperature
@@ -192,7 +191,6 @@ Page({
         Authorization: 'Bearer ' + token
       },
       success: function(res){
-        console.log(res)
         page.setData({
           signData: res.data,
           checkType: 'day'
@@ -210,7 +208,6 @@ Page({
             }
           }
         }
-        // console.log(studentInfo)
         page.setData({
           studentInfo: studentInfo
         })
@@ -219,7 +216,6 @@ Page({
   },
 
   bindDayChange: function(e){
-    // console.log(e.detail.value)
     const page = this
     const token = wx.getStorageSync('userToken')
     page.setData({
@@ -232,7 +228,6 @@ Page({
         Authorization: 'Bearer ' + token
       },
       success: function (res) {
-        // console.log(res)
         page.setData({
           signData: res.data
         })
@@ -281,7 +276,6 @@ Page({
         "specialDate": page.data.specialDate
       },
       success: function(res){
-        console.log(res)
         page.setData({
           acount: res.data.students[0].attendCount
         })
@@ -323,7 +317,6 @@ Page({
         Authorization: 'Bearer ' + token
       },
       success: function(res){
-        console.log(res)
         let arr = []
         let canUseData = []
         for(var i = 0; i < res.data.length; i++){
@@ -344,7 +337,6 @@ Page({
         Authorization: 'Bearer ' + token
       },
       success: function (res2) {
-        // console.log(res2)
         if (res2.data.length != 0) {
           for (var j = 0; j < res2.data.length; j++) {
             if (res2.data[j].patriarch.actor.user.id == wx.getStorageSync('resData').id) {
@@ -360,7 +352,6 @@ Page({
             studentId: canUseData[0].id,
             parentImg: page.data.noImg2
           })
-          // console.log(page.data.studentInfo)
         }
       }
     })
@@ -370,7 +361,6 @@ Page({
    * 签到提交
    */
   submitSign: function(e){
-    // console.log(e.detail.formId)
     const page = this
     if (this.data.parentImg == this.data.noImg2) {
       wx.showModal({
@@ -402,7 +392,6 @@ Page({
         temperature: page.data.temperature
       },
       success: function(res){
-        // console.log(res)
         if(res.statusCode == 200){
           wx.showModal({
             title: '提示',
@@ -424,9 +413,9 @@ Page({
             showCancel: false,
             success: function (res) {
               if (res.confirm) {
-                console.log('用户点击确定')
+                // console.log('用户点击确定')
               } else if (res.cancel) {
-                console.log('用户点击取消')
+                // console.log('用户点击取消')
               }
             }
           })
@@ -441,21 +430,17 @@ Page({
   changeDateTime1(e) {
     this.setData({ 'leaveTime.dateTime1': e.detail.value });
     const arr = this.data.leaveTime.dateTime1
-    // console.log(this.data.leaveTime.dateTime1)
     const y = this.data.leaveTime.dateTimeArray1[0][arr[0]]
     const M = this.data.leaveTime.dateTimeArray1[1][arr[1]]
     const d = this.data.leaveTime.dateTimeArray1[2][arr[2]]
     const h = this.data.leaveTime.dateTimeArray1[3][arr[3]]
     const m = this.data.leaveTime.dateTimeArray1[4][arr[4]]
-    // console.log(y,M,d,h,m)
     const leavetime = y + '-' + M + '-' + d + ' ' + h + ':' + m
-    // console.log(leavetime)
     this.setData({
       'leaveTime.leavetime': leavetime,
       'leaveTime.hasDetail': true,
       'formData.fromDate': new Date(leavetime.replace(/-/g, '/')).getTime()
     })
-    // console.log(this.data.formData)
   },
 
   changeDateTimeColumn1(e) {
@@ -475,21 +460,19 @@ Page({
   changeDateTime2(e) {
     this.setData({ 'backTime.dateTime1': e.detail.value });
     const arr = this.data.backTime.dateTime1
-    // console.log(this.data.backTime.dateTime1)
     const y = this.data.backTime.dateTimeArray1[0][arr[0]]
     const M = this.data.backTime.dateTimeArray1[1][arr[1]]
     const d = this.data.backTime.dateTimeArray1[2][arr[2]]
     const h = this.data.backTime.dateTimeArray1[3][arr[3]]
     const m = this.data.backTime.dateTimeArray1[4][arr[4]]
-    // console.log(y,M,d,h,m)
     const backtime = y + '-' + M + '-' + d + ' ' + h + ':' + m
-    // console.log(backtime)
+    
     this.setData({
       'backTime.backtime': backtime,
       'backTime.hasDetail': true,
       'formData.toDate': new Date(backtime.replace(/-/g, '/')).getTime()
     })
-    // console.log(this.data.formData)
+    
   },
 
   changeDateTimeColumn2(e) {
@@ -511,7 +494,6 @@ Page({
       cause: e.detail.value,
       'formData.desc': e.detail.value
     })
-    // console.log(this.data.formData)
     if(e.detail.value.length > 5){
       this.setData({
         hasCauseDetail: true
@@ -531,7 +513,6 @@ Page({
         'formData.studentId': this.data.studentId
       })
       const data = this.data.formData
-      console.log(data)
       const page = this
       const token = wx.getStorageSync('userToken')
       wx.request({
@@ -542,7 +523,6 @@ Page({
         },
         data: data,
         success: function(res){
-          console.log(res)
           // if (res.statusCode != 200) return
           if(res.statusCode == 200) {
             wx.showModal({
@@ -584,7 +564,6 @@ Page({
         Authorization: 'Bearer ' + token
       },
       success: function(res){
-        // console.log(page.data.studentInfo)
         let data = res.data
         for(var i in data){
           if (data[i].reason == 'SICK') data[i].reason = '病假'
@@ -594,7 +573,6 @@ Page({
           data[i].fromDate = page.getTime(data[i].fromDate, false)
           data[i].toDate = page.getTime(data[i].toDate, false)
         }
-        console.log(data)
         page.guardiansChild(data)
       }
     })
@@ -611,7 +589,6 @@ Page({
         Authorization: 'Bearer ' + token
       },
       success: function (res) {
-        console.log(res)
         //所有孩子id
         // data1[k].student.id
         //监护人孩子id
@@ -689,7 +666,6 @@ Page({
    */
   openMask: function(e){
     const index = e.currentTarget.dataset.index
-    // console.log(this.data.studentInfo[index])
     this.setData({
       detailIndex: index,
       attendanceDetail: true

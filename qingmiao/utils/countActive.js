@@ -3,7 +3,6 @@ const service = require('base.js')
 
 
 const countActive = function (wxActiveType, token) {
-  // console.log(service.baseUrl)
   var source = 'WXAPP'
   let data = {
     source: source,

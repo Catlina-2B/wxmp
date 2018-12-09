@@ -78,9 +78,8 @@ Page({
    * 多项选择
    */
   bindMultiPickerChange: function (e) {
-    // console.log(e)
     const temperature = this.data.multiArray[0][e.detail.value[0]] + '.' + this.data.multiArray[1][e.detail.value[1]]
-    // console.log(temperature)
+    
     this.setData({
       multiIndex: e.detail.value,
       temperature: temperature
@@ -101,15 +100,13 @@ Page({
   changeDateTime1(e) {
     this.setData({ 'leaveTime.dateTime1': e.detail.value });
     const arr = this.data.leaveTime.dateTime1
-    // console.log(this.data.leaveTime.dateTime1)
     const y = this.data.leaveTime.dateTimeArray1[0][arr[0]]
     const M = this.data.leaveTime.dateTimeArray1[1][arr[1]]
     const d = this.data.leaveTime.dateTimeArray1[2][arr[2]]
     const h = this.data.leaveTime.dateTimeArray1[3][arr[3]]
     const m = this.data.leaveTime.dateTimeArray1[4][arr[4]]
-    // console.log(y,M,d,h,m)
     const leavetime = y + '-' + M + '-' + d + ' ' + h + ':' + m
-    // console.log(new Date(leavetime))
+    
     this.setData({
       'leaveTime.leavetime': leavetime,
       'leaveTime.hasDetail': true,
@@ -148,7 +145,6 @@ Page({
         Authorization: 'Bearer ' + token
       },
       success: function (res2) {
-        // console.log(res)
         if (res2.data.length != 0) {
           for (var j = 0; j < res2.data.length; j++) {
             if (res2.data[j].patriarch.actor.user.id == wx.getStorageSync('resData').id) {
@@ -156,7 +152,6 @@ Page({
               canUseData.push(t)
             }
           }
-          console.log(canUseData)
           if (canUseData.length == 0) return
           page.setData({
             studentInfo: canUseData,
@@ -178,7 +173,6 @@ Page({
       })
       return
     }
-    // console.log(this.data.formData)
     const page = this
     const token = wx.getStorageSync('userToken')
     wx.request({
@@ -194,7 +188,6 @@ Page({
           content: '补录成功',
           showCancel: false
         })
-        // console.log(res)
       }
     })
   },

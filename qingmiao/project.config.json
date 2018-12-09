@@ -38,7 +38,7 @@
 				{
 					"id": 0,
 					"name": "版本更新",
-					"pathName": "pages/information/information",
+					"pathName": "pages/index/index",
 					"query": ""
 				}
 			]

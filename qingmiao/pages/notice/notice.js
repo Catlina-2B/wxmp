@@ -56,7 +56,6 @@ Page({
         Authorization: 'Bearer ' + token
       },
       success: function (res) {
-        console.log(res)
         let data1 = res.data.createds
         let data2 = res.data.updateds
         let data = confirmData(data1, data2)

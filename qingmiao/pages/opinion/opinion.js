@@ -37,7 +37,6 @@ Page({
       },
       method: 'post',
       success: function(res){
-        console.log(res)
         if(res.statusCode == 200){
           wx.showModal({
             title: '提示',

@@ -10,11 +10,20 @@ const formatTime = date => {
    // + ' ' + [hour, minute, second].map(formatNumber).join(':')
 }
 
+const formatTime2 = time => {
+  let s = time % 60
+  let m = parseInt(time/60)
+  if (s < 10) s = '0' + s
+  if(m < 10) m = '0' + m
+  return m + ':' + s
+}
+
 const formatNumber = n => {
   n = n.toString()
   return n[1] ? n : '0' + n
 }
 
 module.exports = {
-  formatTime: formatTime
+  formatTime: formatTime,
+  formatTime2: formatTime2,
 }
